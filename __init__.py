@@ -95,13 +95,13 @@ class GreasePencilToRiveExporter:
         # Extract materials/colors
         data['materials'] = []
         if gp_obj.data.materials:
-            for mat in gp_obj.data.materials:
+            for blender_mat in gp_obj.data.materials:
                 mat_data = {
-                    'name': mat.name if mat else 'default',
+                    'name': blender_mat.name if blender_mat else 'default',
                 }
                 # Get GP material settings if available
-                if mat and mat.grease_pencil:
-                    gp_mat = mat.grease_pencil
+                if blender_mat and blender_mat.grease_pencil:
+                    gp_mat = blender_mat.grease_pencil
                     mat_data['stroke_color'] = list(gp_mat.color) if hasattr(gp_mat, 'color') else [0, 0, 0, 1]
                     mat_data['fill_color'] = list(gp_mat.fill_color) if hasattr(gp_mat, 'fill_color') else [1, 1, 1, 0]
                 data['materials'].append(mat_data)
