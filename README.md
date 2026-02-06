@@ -52,9 +52,9 @@ The exporter generates a Luau table structure containing:
 
 local RiveNode = {}
 
--- Materials
+-- Materials (1-based indexing for Luau)
 RiveNode.materials = {
-    [0] = {
+    [1] = {
         name = "Black",
         strokeColor = {0.000, 0.000, 0.000, 1.000},
         fillColor = {1.000, 1.000, 1.000, 0.000}
@@ -72,7 +72,7 @@ RiveNode.layers = {
                 strokes = {
                     {
                         lineWidth = 10,
-                        materialIndex = 0,
+                        materialIndex = 1,
                         points = {
                             {-1.234567, 2.345678, 0.000000},
                             {1.234567, 2.345678, 0.000000},

@@ -117,13 +117,13 @@ class GreasePencilToRiveExporter:
         
         script += "local RiveNode = {}\n\n"
         
-        # Add materials
-        script += "-- Materials\n"
+        # Add materials (using 1-based indexing for Luau)
+        script += "-- Materials (1-based indexing for Luau)\n"
         script += "RiveNode.materials = {\n"
         for i, mat in enumerate(gp_data['materials']):
             stroke_color = mat.get('stroke_color', [0, 0, 0, 1])
             fill_color = mat.get('fill_color', [1, 1, 1, 0])
-            script += f"    [{i}] = {{\n"
+            script += f"    [{i + 1}] = {{\n"
             script += f"        name = \"{mat['name']}\",\n"
             script += f"        strokeColor = {{{stroke_color[0]:.3f}, {stroke_color[1]:.3f}, {stroke_color[2]:.3f}, {stroke_color[3]:.3f}}},\n"
             script += f"        fillColor = {{{fill_color[0]:.3f}, {fill_color[1]:.3f}, {fill_color[2]:.3f}, {fill_color[3]:.3f}}}\n"
@@ -147,7 +147,7 @@ class GreasePencilToRiveExporter:
                 for stroke in frame['strokes']:
                     script += f"                    {{\n"
                     script += f"                        lineWidth = {stroke['line_width']},\n"
-                    script += f"                        materialIndex = {stroke['material_index']},\n"
+                    script += f"                        materialIndex = {stroke['material_index'] + 1},\n"
                     script += f"                        points = {{\n"
                     
                     for point in stroke['points']:
@@ -174,7 +174,7 @@ class GreasePencilToRiveExporter:
         script += "                for _, point in ipairs(stroke.points) do\n"
         script += "                    table.insert(path, {x = point[1], y = point[2]})\n"
         script += "                end\n"
-        script += "                local material = self.materials[stroke.materialIndex] or self.materials[0]\n"
+        script += "                local material = self.materials[stroke.materialIndex] or self.materials[1]\n"
         script += "                table.insert(shapes, {\n"
         script += "                    path = path,\n"
         script += "                    lineWidth = stroke.lineWidth,\n"

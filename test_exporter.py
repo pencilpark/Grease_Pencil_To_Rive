@@ -164,17 +164,22 @@ def test_luau_output_format():
 
 
 def generate_luau_script(gp_data):
-    """Standalone Luau generator for testing"""
+    """
+    Standalone Luau generator for testing
+    Note: This is duplicated from the main exporter to allow testing without Blender dependencies.
+    It intentionally tests the export format independently rather than importing from __init__.py
+    which requires bpy (Blender Python API) to load.
+    """
     script = "-- Rive Node Script generated from Blender Grease Pencil\n"
     script += f"-- Source: {gp_data['name']}\n\n"
     script += "local RiveNode = {}\n\n"
     
-    # Add materials
+    # Add materials (using 1-based indexing for Luau)
     script += "RiveNode.materials = {\n"
     for i, mat in enumerate(gp_data['materials']):
         stroke_color = mat.get('stroke_color', [0, 0, 0, 1])
         fill_color = mat.get('fill_color', [1, 1, 1, 0])
-        script += f"    [{i}] = {{\n"
+        script += f"    [{i + 1}] = {{\n"
         script += f"        name = \"{mat['name']}\",\n"
         script += f"        strokeColor = {{{stroke_color[0]:.3f}, {stroke_color[1]:.3f}, {stroke_color[2]:.3f}, {stroke_color[3]:.3f}}},\n"
         script += f"        fillColor = {{{fill_color[0]:.3f}, {fill_color[1]:.3f}, {fill_color[2]:.3f}, {fill_color[3]:.3f}}}\n"
@@ -197,7 +202,7 @@ def generate_luau_script(gp_data):
             for stroke in frame['strokes']:
                 script += f"                    {{\n"
                 script += f"                        lineWidth = {stroke['line_width']},\n"
-                script += f"                        materialIndex = {stroke['material_index']},\n"
+                script += f"                        materialIndex = {stroke['material_index'] + 1},\n"
                 script += f"                        points = {{\n"
                 
                 for point in stroke['points']:
