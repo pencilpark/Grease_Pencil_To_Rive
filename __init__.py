@@ -55,41 +55,44 @@ class GreasePencilToRiveExporter:
         }
         
         for layer in gp_obj.data.layers:
-            if not layer.hide:  # Skip hidden layers
-                layer_data = {
-                    'name': layer.info,
-                    'opacity': layer.opacity,
-                    'frames': []
+            # Skip hidden layers only if export_visible_only is enabled
+            if self.export_options.get('export_visible_only', True) and layer.hide:
+                continue
+                
+            layer_data = {
+                'name': layer.info,
+                'opacity': layer.opacity,
+                'frames': []
+            }
+            
+            for frame in layer.frames:
+                frame_data = {
+                    'frame_number': frame.frame_number,
+                    'strokes': []
                 }
                 
-                for frame in layer.frames:
-                    frame_data = {
-                        'frame_number': frame.frame_number,
-                        'strokes': []
+                for stroke in frame.strokes:
+                    stroke_data = {
+                        'line_width': stroke.line_width,
+                        'points': [],
+                        'material_index': stroke.material_index,
                     }
                     
-                    for stroke in frame.strokes:
-                        stroke_data = {
-                            'line_width': stroke.line_width,
-                            'points': [],
-                            'material_index': stroke.material_index,
-                        }
-                        
-                        # Extract point coordinates
-                        for point in stroke.points:
-                            stroke_data['points'].append({
-                                'x': point.co.x,
-                                'y': point.co.y,
-                                'z': point.co.z,
-                                'pressure': point.pressure,
-                                'strength': point.strength,
-                            })
-                        
-                        frame_data['strokes'].append(stroke_data)
+                    # Extract point coordinates
+                    for point in stroke.points:
+                        stroke_data['points'].append({
+                            'x': point.co.x,
+                            'y': point.co.y,
+                            'z': point.co.z,
+                            'pressure': point.pressure,
+                            'strength': point.strength,
+                        })
                     
-                    layer_data['frames'].append(frame_data)
+                    frame_data['strokes'].append(stroke_data)
                 
-                data['layers'].append(layer_data)
+                layer_data['frames'].append(frame_data)
+            
+            data['layers'].append(layer_data)
         
         # Extract materials/colors
         data['materials'] = []
