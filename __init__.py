@@ -16,8 +16,6 @@ bl_info = {
 import bpy
 from bpy.props import StringProperty, BoolProperty
 from bpy_extras.io_utils import ExportHelper
-import os
-import json
 
 
 class GreasePencilToRiveExporter:
